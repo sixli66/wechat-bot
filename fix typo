@@ -1,0 +1,20 @@
+from flask import Flask, request
+import hashlib
+
+app = Flask(__name__)
+TOKEN = 'wechat2025'
+
+@app.route('/wechat', methods=['GET'])
+def check():
+    signature = request.args.get('signature')
+    timestamp = request.args.get('timestamp')
+    nonce = request.args.get('nonce')
+    echostr = request.args.get('echostr')
+    tmp = ''.join(sorted([TOKEN, timestamp, nonce]))
+    if hashlib.sha1(tmp.encode()).hexdigest() == signature:
+        return echostr
+    return 'fail'
+
+@app.route('/wechat', methods=['POST'])
+def receive():
+    return 'success'
